@@ -1,3 +1,4 @@
+
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -5,17 +6,16 @@ using UnityEngine.InputSystem;
 public class Floor : MonoBehaviour
 {
     [SerializeField] float floorMoveSpeed = 5f;
-    [SerializeField] List<GameObject> spawnPoints;
-    [SerializeField] List<GameObject> targets;
     [SerializeField] List<string> layerNames;
-    [SerializeField] GameObject floorPrefab;
     SpriteRenderer spriteRenderer;
 
-    Transform myStartPoint;   // اسپاون پوینت اختصاصی این ابجکت
-    Transform myTargetPoint;  // تارگت اختصاصی این ابجکت (هم‌ایندکس با اسپاون پوینت)
-    Transform target;         // مقصد فعلی حرکت (یکی از دو تا بالا)
+    Transform target;
+    Vector3 currentPos;
 
-    bool movingToTarget; // true یعنی داره میره سمت myTargetPoint، false یعنی داره برمی‌گرده سمت myStartPoint
+    const string layerNameDown = "DownFloor";
+    const string layerNameUp = "UpFloor";
+
+    bool movingToTarget;
 
     [SerializeField] float arriveThreshold = 0.01f;
 
@@ -23,22 +23,11 @@ public class Floor : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
 
-        if (spawnPoints == null || targets == null || spawnPoints.Count == 0 || spawnPoints.Count != targets.Count)
-        {
-            Debug.LogError("Floor: spawnPoints و targets باید پر باشن و تعدادشون برابر باشه.");
-            enabled = false;
-            return;
-        }
-
-        int index = Random.Range(0, spawnPoints.Count);
-
-        myStartPoint = spawnPoints[index].transform;
-        myTargetPoint = targets[index].transform;
-
-        Instantiate(floorPrefab, myStartPoint.transform.position, Quaternion.identity);
+        spriteRenderer.sortingLayerName = layerNameUp;
 
         movingToTarget = true;
-        target = myTargetPoint;
+        FloorManager.instance.canSpwan = false;
+        target = FloorManager.instance.myStartPoint;
     }
 
     void Update()
@@ -51,15 +40,28 @@ public class Floor : MonoBehaviour
             floorMoveSpeed * Time.deltaTime
         );
 
-        // اگه به مقصد فعلی رسید، جهت رو برعکس کن (بین استارت‌پوینت و تارگت خودش لوپ بزن)
+        currentPos = transform.position;
+
         if (Vector3.Distance(transform.position, target.position) <= arriveThreshold)
         {
             movingToTarget = !movingToTarget;
-            target = movingToTarget ? myTargetPoint : myStartPoint;
+            target = movingToTarget ? FloorManager.instance.myTargetPoint : FloorManager.instance.myStartPoint;
         }
-        if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
+        if (FloorManager.instance.currentFloor != this)
+            return;
+
+        if (Touchscreen.current != null &&
+            Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
         {
+            if (Vector3.Distance(currentPos, FloorManager.instance.defaultPos.position) <= arriveThreshold)
+            {
+                transform.position = FloorManager.instance.defaultPos.position;
+            }
+
             floorMoveSpeed = 0;
+            FloorManager.instance.canSpwan = true;
+            spriteRenderer.sortingLayerName = layerNameDown;
+            FloorManager.instance.floorCounter++;
         }
     }
 }
