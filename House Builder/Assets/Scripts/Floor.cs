@@ -12,8 +12,8 @@ public class Floor : MonoBehaviour
     Transform target;
     Vector3 currentPos;
 
-    const string layerNameDown = "DownFloor";
-    const string layerNameUp = "UpFloor";
+    // const string layerNameDown = "DownFloor";
+    // const string layerNameUp = "UpFloor";
 
     bool movingToTarget;
 
@@ -23,8 +23,6 @@ public class Floor : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
 
-        spriteRenderer.sortingLayerName = layerNameUp;
-
         movingToTarget = true;
         FloorManager.instance.canSpwan = false;
         target = FloorManager.instance.myStartPoint;
@@ -33,6 +31,8 @@ public class Floor : MonoBehaviour
     void Update()
     {
         if (target == null) return;
+
+        spriteRenderer.sortingOrder = Mathf.RoundToInt(transform.position.y * 100);
 
         transform.position = Vector3.MoveTowards(
             transform.position,
@@ -60,7 +60,7 @@ public class Floor : MonoBehaviour
 
             floorMoveSpeed = 0;
             FloorManager.instance.canSpwan = true;
-            spriteRenderer.sortingLayerName = layerNameDown;
+            // spriteRenderer.sortingLayerName = layerNameDown;
             FloorManager.instance.floorCounter++;
         }
     }
