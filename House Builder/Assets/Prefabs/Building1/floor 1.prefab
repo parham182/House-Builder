@@ -26,13 +26,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6423706567449314265}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.38268343, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: -4.285, y: 10.1, z: -0.13999999}
+  m_LocalRotation: {x: 0, y: -0.38268343, z: 0, w: 0.92387956}
+  m_LocalPosition: {x: 0, y: 10.1, z: 0}
   m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
-  m_ConstrainProportionsScale: 1
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -45, z: 0}
 --- !u!212 &6360017366885250307
 SpriteRenderer:
   serializedVersion: 2
@@ -106,5 +106,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Floor
   floorMoveSpeed: 5
   layerNames: []
-  defPos: {fileID: 1908600615371485294, guid: 259e050abbdf2684798aace7a2d3c983, type: 3}
   arriveThreshold: 0.5
