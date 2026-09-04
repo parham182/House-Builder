@@ -106,5 +106,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Floor
   floorMoveSpeed: 5
   layerNames: []
-  defPos: {fileID: 1908600615371485294, guid: 259e050abbdf2684798aace7a2d3c983, type: 3}
   arriveThreshold: 0.5
