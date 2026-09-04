@@ -729,8 +729,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FloorManager
   floors:
-  - {fileID: 6423706567449314265, guid: ac9e2ddf6e6977e47b61d8d10190574a, type: 3}
-  - {fileID: 4172376097019811760, guid: 1575c8790a887594a951f677c04fe8c6, type: 3}
+  - {fileID: 11400000, guid: 766cec0d9ec76ab4d8803dc99660daa5, type: 2}
+  - {fileID: 11400000, guid: c6f4b243b08fbb84891a21aae2befb30, type: 2}
+  - {fileID: 11400000, guid: c6f4b243b08fbb84891a21aae2befb30, type: 2}
+  - {fileID: 11400000, guid: c6f4b243b08fbb84891a21aae2befb30, type: 2}
+  - {fileID: 11400000, guid: c6f4b243b08fbb84891a21aae2befb30, type: 2}
+  - {fileID: 11400000, guid: c6f4b243b08fbb84891a21aae2befb30, type: 2}
+  - {fileID: 11400000, guid: c6f4b243b08fbb84891a21aae2befb30, type: 2}
+  - {fileID: 11400000, guid: c6f4b243b08fbb84891a21aae2befb30, type: 2}
+  - {fileID: 11400000, guid: 94af704b9483bf64293f2f176e2f5d63, type: 2}
+  - {fileID: 11400000, guid: 4f736b147f2e7c34caa023471834ddc3, type: 2}
+  - {fileID: 11400000, guid: acd0a7945bf0d7348a12c707f87ceec0, type: 2}
+  - {fileID: 11400000, guid: 5daf8bab79f30334fb64f531bbf3df0a, type: 2}
+  - {fileID: 11400000, guid: 28355102bfe56b44484f59695e5d7fb1, type: 2}
   spawnPoints:
   - {fileID: 161544307}
   - {fileID: 1778384588}
@@ -739,7 +750,7 @@ MonoBehaviour:
   - {fileID: 1536672083}
   defaultPos: {fileID: 125602672}
   mainCamera: {fileID: 45693138}
-  hightValue: 0.5
+  hightValue: 0.59
   cameraHightValue: 5
   cameraSpeed: 5
   canSpwan: 0
@@ -1300,7 +1311,7 @@ Transform:
   m_GameObject: {fileID: 1486125482}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.65, y: 10.1, z: 0}
+  m_LocalPosition: {x: -15.17, y: 10.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

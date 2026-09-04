@@ -8,11 +8,13 @@ public class Floor : MonoBehaviour
     [SerializeField] float floorMoveSpeed = 5f;
     [SerializeField] List<string> layerNames;
     SpriteRenderer spriteRenderer;
-
     Transform target;
     Vector3 currentPos;
 
-    // const string layerNameDown = "DownFloor";
+    private FloorData floorData;
+
+
+    // const string layerNameDown   = "DownFloor";
     // const string layerNameUp = "UpFloor";
 
     bool movingToTarget;
@@ -63,5 +65,10 @@ public class Floor : MonoBehaviour
             // spriteRenderer.sortingLayerName = layerNameDown;
             FloorManager.instance.floorCounter++;
         }
+    }
+
+    public void SetFloorData(FloorData data)
+    {
+        floorData = data;
     }
 }

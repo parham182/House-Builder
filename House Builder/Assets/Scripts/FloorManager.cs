@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class FloorManager : MonoBehaviour
 {
-    [SerializeField] List<GameObject> floors;
+    [SerializeField] List<FloorData> floors;
     [SerializeField] List<GameObject> spawnPoints;
     [SerializeField] List<GameObject> targets;
     [SerializeField] public Transform defaultPos;
@@ -23,6 +24,7 @@ public class FloorManager : MonoBehaviour
     float sum = 0;
     int lastCounter = 0;
     public static FloorManager instance;
+    Vector3 defaultDefaultPos;
 
     void Awake()
     {
@@ -34,19 +36,11 @@ public class FloorManager : MonoBehaviour
         canSpwan = true;
         floorNumber = 0;
         targetY = mainCamera.transform.position.y;
+        defaultDefaultPos = defaultPos.transform.position;
     }
 
     void Update()
     {
-        int floorState;
-        if (floorNumber >= 1)
-        {
-            floorState = 1;
-        }
-        else
-        {
-            floorState = 0;
-        }
         if (canSpwan)
         {
             int index = Random.Range(0, spawnPoints.Count);
@@ -54,18 +48,36 @@ public class FloorManager : MonoBehaviour
             myStartPoint = spawnPoints[index].transform;
             myTargetPoint = targets[index].transform;
 
+            // floorNumber = floorNumber >= 1 ? 1 : 0;
+
+            FloorData selectedFloorData = floors[floorNumber];
+            if (selectedFloorData.useDefaultPos) { defaultPos.transform.position = selectedFloorData.DefaultPos; }
+            else
+            {
+                Vector3 pos1 = defaultPos.position;
+                pos1.x = defaultDefaultPos.x;
+                pos1.z = defaultDefaultPos.z;
+                defaultPos.position = pos1;
+            }
+            print(defaultPos.transform.position);
+
             GameObject newFloor = Instantiate(
-                floors[floorState],
+                selectedFloorData.FloorPrefab,
                 myStartPoint.position,
                 Quaternion.Euler(0, 45, 0)
             );
-
             currentFloor = newFloor.GetComponent<Floor>();
+
+            currentFloor.SetFloorData(selectedFloorData);
 
             canSpwan = false;
             floorNumber++;
         }
-
+        if (floorNumber >= floors.Count)
+        {
+            print("You Win");
+            Invoke("reloadScene", 10f);
+        }
         if (floorCounter > lastCounter)
         {
             lastCounter = floorCounter;
@@ -78,11 +90,12 @@ public class FloorManager : MonoBehaviour
             {
                 obj.transform.position += new Vector3(0f, hightValue, 0f);
             }
+
             defaultPos.transform.position += new Vector3(0f, hightValue, 0f);
 
             targetY += hightValue;
         }
-        print(targetY);
+
         Vector3 pos = mainCamera.transform.position;
 
         pos.y = Mathf.Lerp(
@@ -93,6 +106,10 @@ public class FloorManager : MonoBehaviour
 
         mainCamera.transform.position = pos;
 
+    }
+    void reloadScene()
+    {
+        SceneManager.LoadScene(0);
     }
 }
 
