@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FloorData
   floorPrefab: {fileID: 6423706567449314265, guid: ac9e2ddf6e6977e47b61d8d10190574a, type: 3}
   floorNumber: 0
-  defaultPos: {x: -0.13, y: 10.1, z: -0.13}
+  defaultPos: {x: -0.2, y: 10.1, z: -0.2}
   useDefaultPos: 1

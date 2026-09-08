@@ -1,4 +1,3 @@
-
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -25,6 +24,8 @@ public class FloorManager : MonoBehaviour
     int lastCounter = 0;
     public static FloorManager instance;
     Vector3 defaultDefaultPos;
+    List<Vector3> defaultSpawnPointPos;
+    List<Vector3> defaultTargetPointPos;
 
     void Awake()
     {
@@ -37,6 +38,11 @@ public class FloorManager : MonoBehaviour
         floorNumber = 0;
         targetY = mainCamera.transform.position.y;
         defaultDefaultPos = defaultPos.transform.position;
+        for (int i = 0; i < spawnPoints.Count; i++)
+        {
+            defaultSpawnPointPos[i] = spawnPoints[i].transform.position;
+            defaultTargetPointPos[i] = targets[i].transform.position;
+        }
     }
 
     void Update()
@@ -51,13 +57,27 @@ public class FloorManager : MonoBehaviour
             // floorNumber = floorNumber >= 1 ? 1 : 0;
 
             FloorData selectedFloorData = floors[floorNumber];
-            if (selectedFloorData.useDefaultPos) { defaultPos.transform.position = selectedFloorData.DefaultPos; }
+            if (selectedFloorData.useDefaultPos)
+            {
+                Vector3 _pos = spawnPoints[index].transform.position;
+                _pos.y = selectedFloorData.DefaultPos.y;
+
+                Vector3 _pos1 = targets[index].transform.position;
+                _pos1.y = selectedFloorData.DefaultPos.y;
+                targets[index].transform.position = _pos;
+                defaultPos.transform.position = selectedFloorData.DefaultPos;
+            }
             else
             {
-                Vector3 pos1 = defaultPos.position;
-                pos1.x = defaultDefaultPos.x;
-                pos1.z = defaultDefaultPos.z;
-                defaultPos.position = pos1;
+                Vector3 _pos = defaultPos.position;
+                _pos.x = defaultDefaultPos.x;
+                _pos.z = defaultDefaultPos.z;
+                defaultPos.position = _pos;
+
+                Vector3 _pos1 = spawnPoints[index].transform.position;
+                _pos1.x = defaultSpawnPointPos[index].x;
+                _pos1.z = defaultSpawnPointPos[index].z;
+                spawnPoints[index].transform.position = _pos1;
             }
             print(defaultPos.transform.position);
 
@@ -73,11 +93,13 @@ public class FloorManager : MonoBehaviour
             canSpwan = false;
             floorNumber++;
         }
+
         if (floorNumber >= floors.Count)
         {
             print("You Win");
             Invoke("reloadScene", 10f);
         }
+
         if (floorCounter > lastCounter)
         {
             lastCounter = floorCounter;
