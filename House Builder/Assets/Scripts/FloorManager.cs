@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -38,10 +37,15 @@ public class FloorManager : MonoBehaviour
         floorNumber = 0;
         targetY = mainCamera.transform.position.y;
         defaultDefaultPos = defaultPos.transform.position;
+
+        // Fix: Initialize lists before using them
+        defaultSpawnPointPos = new List<Vector3>();
+        defaultTargetPointPos = new List<Vector3>();
+
         for (int i = 0; i < spawnPoints.Count; i++)
         {
-            defaultSpawnPointPos[i] = spawnPoints[i].transform.position;
-            defaultTargetPointPos[i] = targets[i].transform.position;
+            defaultSpawnPointPos.Add(spawnPoints[i].transform.position);
+            defaultTargetPointPos.Add(targets[i].transform.position);
         }
     }
 
@@ -54,17 +58,18 @@ public class FloorManager : MonoBehaviour
             myStartPoint = spawnPoints[index].transform;
             myTargetPoint = targets[index].transform;
 
-            // floorNumber = floorNumber >= 1 ? 1 : 0;
-
             FloorData selectedFloorData = floors[floorNumber];
             if (selectedFloorData.useDefaultPos)
             {
-                Vector3 _pos = spawnPoints[index].transform.position;
-                _pos.y = selectedFloorData.DefaultPos.y;
+                // Fix: Properly update both spawn and target positions
+                Vector3 spawnPos = spawnPoints[index].transform.position;
+                spawnPos.y = selectedFloorData.DefaultPos.y;
+                spawnPoints[index].transform.position = spawnPos;
 
-                Vector3 _pos1 = targets[index].transform.position;
-                _pos1.y = selectedFloorData.DefaultPos.y;
-                targets[index].transform.position = _pos;
+                Vector3 targetPos = targets[index].transform.position;
+                targetPos.y = selectedFloorData.DefaultPos.y;
+                targets[index].transform.position = targetPos;
+
                 defaultPos.transform.position = selectedFloorData.DefaultPos;
             }
             else
@@ -78,7 +83,14 @@ public class FloorManager : MonoBehaviour
                 _pos1.x = defaultSpawnPointPos[index].x;
                 _pos1.z = defaultSpawnPointPos[index].z;
                 spawnPoints[index].transform.position = _pos1;
+
+                // Also restore target point x/z for consistency
+                Vector3 _pos2 = targets[index].transform.position;
+                _pos2.x = defaultTargetPointPos[index].x;
+                _pos2.z = defaultTargetPointPos[index].z;
+                targets[index].transform.position = _pos2;
             }
+
             print(defaultPos.transform.position);
 
             GameObject newFloor = Instantiate(
@@ -127,13 +139,10 @@ public class FloorManager : MonoBehaviour
         );
 
         mainCamera.transform.position = pos;
-
     }
+
     void reloadScene()
     {
         SceneManager.LoadScene(0);
     }
 }
-
-
-

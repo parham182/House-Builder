@@ -1,4 +1,3 @@
-
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -7,19 +6,16 @@ public class Floor : MonoBehaviour
 {
     [SerializeField] float floorMoveSpeed = 5f;
     [SerializeField] List<string> layerNames;
+    [SerializeField] float arriveThreshold = 0.01f;
+
+    [Header("Snap Settings")]
+    [SerializeField] float snapTolerance = 0.45f; // فاصله مجاز برای اسنپ شدن (قابل تنظیم)
+
     SpriteRenderer spriteRenderer;
     Transform target;
     Vector3 currentPos;
-
     private FloorData floorData;
-
-
-    // const string layerNameDown   = "DownFloor";
-    // const string layerNameUp = "UpFloor";
-
     bool movingToTarget;
-
-    [SerializeField] float arriveThreshold = 0.01f;
 
     void Start()
     {
@@ -49,22 +45,59 @@ public class Floor : MonoBehaviour
             movingToTarget = !movingToTarget;
             target = movingToTarget ? FloorManager.instance.myTargetPoint : FloorManager.instance.myStartPoint;
         }
+
         if (FloorManager.instance.currentFloor != this)
             return;
 
-        if (Touchscreen.current != null &&
-            Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
-        {
-            if (Vector3.Distance(currentPos, FloorManager.instance.defaultPos.position) <= arriveThreshold)
-            {
-                transform.position = FloorManager.instance.defaultPos.position;
-            }
+        // پشتیبانی از تاچ و موس (برای تست در ادیتور)
+        bool pressed = false;
+        if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
+            pressed = true;
+        else if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+            pressed = true;
 
-            floorMoveSpeed = 0;
-            FloorManager.instance.canSpwan = true;
-            // spriteRenderer.sortingLayerName = layerNameDown;
-            FloorManager.instance.floorCounter++;
+        if (pressed)
+        {
+            TrySnapAndPlace();
         }
+    }
+
+    void TrySnapAndPlace()
+    {
+        Vector3 perfectPos = FloorManager.instance.defaultPos.position;
+        bool shouldSnap = false;
+
+        if (floorData != null && floorData.SnapOnY)
+        {
+            // اسنپ کامل روی هر سه محور
+            float dist = Vector3.Distance(currentPos, perfectPos);
+            if (dist <= snapTolerance)
+            {
+                transform.position = perfectPos;
+                shouldSnap = true;
+            }
+        }
+        else
+        {
+            // فقط اسنپ افقی (X و Z) - ارتفاع فعلی حفظ می‌شود
+            float horizontalDist = Vector2.Distance(
+                new Vector2(currentPos.x, currentPos.z),
+                new Vector2(perfectPos.x, perfectPos.z)
+            );
+
+            if (horizontalDist <= snapTolerance)
+            {
+                Vector3 snapped = perfectPos;
+                snapped.y = currentPos.y; // ارتفاع فعلی رو نگه دار
+                transform.position = snapped;
+                shouldSnap = true;
+            }
+        }
+
+        // در هر صورت حرکت رو متوقف کن و طبقه بعدی رو اجازه بده
+        floorMoveSpeed = 0;
+        FloorManager.instance.canSpwan = true;
+        FloorManager.instance.floorCounter++;
     }
 
     public void SetFloorData(FloorData data)
