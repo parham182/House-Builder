@@ -16,5 +16,5 @@ MonoBehaviour:
   floorNumber: 0
   useDefaultPos: 1
   defaultPos: {x: -0.2, y: 10.1, z: -0.2}
-  snapOnY: 0
-  spawnOffset: {x: -2.56, y: 0, z: -2.11}
+  spawnOffset: {x: 0, y: 0, z: 0}
+  targetOffset: {x: 0, y: 0, z: 0}

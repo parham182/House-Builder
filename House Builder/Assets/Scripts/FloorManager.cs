@@ -38,7 +38,6 @@ public class FloorManager : MonoBehaviour
         targetY = mainCamera.transform.position.y;
         defaultDefaultPos = defaultPos.transform.position;
 
-        // Fix: Initialize lists before using them
         defaultSpawnPointPos = new List<Vector3>();
         defaultTargetPointPos = new List<Vector3>();
 
@@ -53,43 +52,62 @@ public class FloorManager : MonoBehaviour
     {
         if (canSpwan)
         {
-            int index = Random.Range(0, spawnPoints.Count);
+            FloorData selectedFloorData = floors[floorNumber];
 
+            Vector3 spawnOff = selectedFloorData.SpawnOffset;
+            Vector3 targetOff = selectedFloorData.TargetOffset;
+
+            int index = Random.Range(0, spawnPoints.Count);
             myStartPoint = spawnPoints[index].transform;
             myTargetPoint = targets[index].transform;
 
-            FloorData selectedFloorData = floors[floorNumber];
             if (selectedFloorData.useDefaultPos)
             {
-                // Fix: Properly update both spawn and target positions
-                Vector3 spawnPos = spawnPoints[index].transform.position;
+                // ارتفاع از DefaultPos + آفست
+                Vector3 spawnPos = defaultSpawnPointPos[index];
                 spawnPos.y = selectedFloorData.DefaultPos.y;
+                spawnPos.x += spawnOff.x;
+                spawnPos.z += spawnOff.z;
                 spawnPoints[index].transform.position = spawnPos;
 
-                Vector3 targetPos = targets[index].transform.position;
+                Vector3 targetPos = defaultTargetPointPos[index];
                 targetPos.y = selectedFloorData.DefaultPos.y;
+                targetPos.x += targetOff.x;
+                targetPos.z += targetOff.z;
                 targets[index].transform.position = targetPos;
+            }
+            else
+            {
+                // موقعیت پایه + آفست، ارتفاع فعلی حفظ بشه
+                Vector3 spawnPos = defaultSpawnPointPos[index];
+                spawnPos.x += spawnOff.x;
+                spawnPos.z += spawnOff.z;
+                spawnPos.y = spawnPoints[index].transform.position.y;
+                spawnPoints[index].transform.position = spawnPos;
 
+                Vector3 targetPos = defaultTargetPointPos[index];
+                targetPos.x += targetOff.x;
+                targetPos.z += targetOff.z;
+                targetPos.y = targets[index].transform.position.y;
+                targets[index].transform.position = targetPos;
+            }
+
+
+            // defaultPos رو تنظیم کن
+            if (selectedFloorData.useDefaultPos)
+            {
                 defaultPos.transform.position = selectedFloorData.DefaultPos;
             }
             else
             {
-                Vector3 _pos = defaultPos.position;
-                _pos.x = defaultDefaultPos.x;
-                _pos.z = defaultDefaultPos.z;
-                defaultPos.position = _pos;
-
-                Vector3 _pos1 = spawnPoints[index].transform.position;
-                _pos1.x = defaultSpawnPointPos[index].x;
-                _pos1.z = defaultSpawnPointPos[index].z;
-                spawnPoints[index].transform.position = _pos1;
-
-                // Also restore target point x/z for consistency
-                Vector3 _pos2 = targets[index].transform.position;
-                _pos2.x = defaultTargetPointPos[index].x;
-                _pos2.z = defaultTargetPointPos[index].z;
-                targets[index].transform.position = _pos2;
+                Vector3 defPos = defaultPos.position;
+                defPos.x = defaultDefaultPos.x;
+                defPos.z = defaultDefaultPos.z;
+                defaultPos.position = defPos;
             }
+
+            // حالا یکی از جفت‌ها رو رندوم انتخاب کن برای حرکت
+
 
             print(defaultPos.transform.position);
 
