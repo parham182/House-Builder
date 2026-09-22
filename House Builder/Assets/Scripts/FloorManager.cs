@@ -26,10 +26,7 @@ public class FloorManager : MonoBehaviour
     List<Vector3> defaultSpawnPointPos;
     List<Vector3> defaultTargetPointPos;
 
-    void Awake()
-    {
-        instance = this;
-    }
+    void Awake() { instance = this; }
 
     void Start()
     {
@@ -63,7 +60,6 @@ public class FloorManager : MonoBehaviour
 
             if (selectedFloorData.useDefaultPos)
             {
-                // ارتفاع از DefaultPos + آفست
                 Vector3 spawnPos = defaultSpawnPointPos[index];
                 spawnPos.y = selectedFloorData.DefaultPos.y;
                 spawnPos.x += spawnOff.x;
@@ -78,7 +74,6 @@ public class FloorManager : MonoBehaviour
             }
             else
             {
-                // موقعیت پایه + آفست، ارتفاع فعلی حفظ بشه
                 Vector3 spawnPos = defaultSpawnPointPos[index];
                 spawnPos.x += spawnOff.x;
                 spawnPos.z += spawnOff.z;
@@ -92,8 +87,6 @@ public class FloorManager : MonoBehaviour
                 targets[index].transform.position = targetPos;
             }
 
-
-            // defaultPos رو تنظیم کن
             if (selectedFloorData.useDefaultPos)
             {
                 defaultPos.transform.position = selectedFloorData.DefaultPos;
@@ -105,8 +98,6 @@ public class FloorManager : MonoBehaviour
                 defPos.z = defaultDefaultPos.z;
                 defaultPos.position = defPos;
             }
-
-            // حالا یکی از جفت‌ها رو رندوم انتخاب کن برای حرکت
 
 
             print(defaultPos.transform.position);
@@ -124,11 +115,11 @@ public class FloorManager : MonoBehaviour
             floorNumber++;
         }
 
-        if (floorNumber >= floors.Count)
-        {
-            print("You Win");
-            Invoke("reloadScene", 10f);
-        }
+        // if (floorNumber >= floors.Count)
+        // {
+        //     print("You Win");
+        //     Invoke("reloadScene", 10f);
+        // }
 
         if (floorCounter > lastCounter)
         {
@@ -159,8 +150,8 @@ public class FloorManager : MonoBehaviour
         mainCamera.transform.position = pos;
     }
 
-    void reloadScene()
-    {
-        SceneManager.LoadScene(0);
-    }
+    // void reloadScene()
+    // {
+    //     SceneManager.LoadScene(0);
+    // }
 }
